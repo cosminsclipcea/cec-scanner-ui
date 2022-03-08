@@ -1,0 +1,7 @@
+input[name="username"],
+input[name="password"] {
+  max-width: 80px;
+}
+.AppScanResult img {
+  max-width: 320px;
+}
