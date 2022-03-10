@@ -80,6 +80,13 @@ export interface IB900Check {
   testResult: string;
 }
 
+export interface IImage {
+  available: boolean;
+  img: string;
+  motion_estimation: number;
+  type: string;
+}
+
 export interface IMrz {
   available: boolean;
   composite: string;
@@ -112,6 +119,11 @@ export interface IMrz {
   line2: string;
   mrz: string;
   optional: number;
+}
+
+export interface IDocumentState {
+  document: string;
+  timestamp: any;
 }
 
 export class ScannerAPI {
@@ -170,11 +182,23 @@ export class ScannerAPI {
   }
 
   // reservation id must exist
-  public async getMrzDevice() {
-    this.client.get(
-      `/device-mrz?reservationid=${this.reservationid}&timeout=25`
+  public async documentState(): Promise<IDocumentState> {
+    const response: AxiosResponse<IDocumentState> = await this.client.get(
+      `/document-state?reservationid=${this.reservationid}&waitFor=On`
     );
-    //  return response.data;
+    return response.data;
+  }
+
+  public async keepReservation() {
+    this.client.put(
+      `/reservation?reservationid=${this.reservationid}&waitFor=On`
+    );
+  }
+
+  public async deleteReservation() {
+    this.client.delete(
+      `/reservation?reservationid=${this.reservationid}&waitFor=On`
+    );
   }
 
   public async scanExecute(): Promise<IScannerAPIScanExecuteResult[]> {
